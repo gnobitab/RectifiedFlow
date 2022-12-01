@@ -4,8 +4,11 @@ This is the official implementation of paper
 ## [Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow](https://arxiv.org/abs/2209.03003) 
 by *Xingchao Liu, Chengyue Gong, Qiang Liu* from UT Austin
 
-|![](flow1.gif)| ![](flow2.gif) | ![](flow3.gif)  |
-|:---:|:---:|:---:|
-| (a) Linear Interpolation $X_t$ | (b) Rectified Flow $Z_t$ | (c) Straightened Rectified Flow after Reflow  |
+Rectified Flow is a novel method for learning transport maps between two distributions $\pi_0$ and $\pi_1$, by connecting **straight paths** between the samples and learning an ODE model.
 
-Rectified Flow is a novel method for learning transport maps between two distributions $\pi_0$ and $\pi_1$
+Then, by a **reflow** operation, we iteratively straighten the ODE trajectories to eventually achieve **one-step** generation.
+
+An introductory website can be found [here](https://www.cs.utexas.edu/~lqiang/rectflow/html/intro.html) and the main idea is illustrated in the following figure:
+
+![](assets/intro_two_gauss.png)
+
