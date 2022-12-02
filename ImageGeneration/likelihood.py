@@ -115,7 +115,7 @@ def get_likelihood_fn(sde, inverse_scaler, hutchinson_type='Rademacher',
 
 def get_likelihood_fn_rf(sde, inverse_scaler, hutchinson_type='Rademacher',
                       rtol=1e-5, atol=1e-5, method='RK45', eps=1e-5):
-  """Create a function to compute the unbiased log-likelihood estimate of a given data point.
+  """Create a function to compute the unbiased log-likelihood estimate of a given data point for Rectified Flow.
 
   Args:
     sde: A `sde_lib.SDE` object that represents the forward SDE.
@@ -176,30 +176,11 @@ def get_likelihood_fn_rf(sde, inverse_scaler, hutchinson_type='Rademacher',
         logp_grad = mutils.to_flattened_numpy(div_fn(model, sample, vec_t*999, epsilon))
         return np.concatenate([drift, logp_grad], axis=0)
       
-      #def forward_func(t, x):
-      #  x = mutils.from_flattened_numpy(x, shape).to(data.device).type(torch.float32)
-      #  vec_t = torch.ones(shape[0], device=x.device) * t
-      #  model_fn = mutils.get_model_fn(model, train=False)
-      #  drift = model_fn(x, vec_t*999)
-      #  return mutils.to_flattened_numpy(drift)
-
-
       init = np.concatenate([mutils.to_flattened_numpy(data), np.zeros((shape[0],))], axis=0)
-      #print(init.shape)
-      #print(data.min(), data.max())
-      #torchvision.utils.save_image(data.clamp_(-1.0, 1.0), 'figs/data.png', nrow=10, normalize=True)
       solution = integrate.solve_ivp(ode_func, (sde.T, eps), init, rtol=rtol, atol=atol, method=method)
       nfe = solution.nfev
       zp = solution.y[:, -1]
       z = mutils.from_flattened_numpy(zp[:-shape[0]], shape).to(data.device).type(torch.float32)
-      #print(z.shape, nfe)
-      
-      #solution = integrate.solve_ivp(forward_func, (eps, sde.T), mutils.to_flattened_numpy(z), rtol=rtol, atol=atol, method=method)
-      #zp = solution.y[:, -1]
-      #z = mutils.from_flattened_numpy(zp, shape).to(data.device).type(torch.float32)
-      #print(z.shape, nfe, z.min(), z.max())
-      #torchvision.utils.save_image(z.clamp_(-1.0, 1.0), 'figs/cifar10.png', nrow=10, normalize=True) 
-      #assert False
 
       delta_logp = mutils.from_flattened_numpy(zp[-shape[0]:], (shape[0],)).to(data.device).type(torch.float32)
       prior_logp = get_prior_logp(z)

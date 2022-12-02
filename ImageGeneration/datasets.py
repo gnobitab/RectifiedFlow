@@ -119,7 +119,7 @@ def get_dataset(config, uniform_dequantization=False, evaluation=False):
       return tf.image.resize(img, [config.data.image_size, config.data.image_size], antialias=True)
 
   elif config.data.dataset == 'CELEBA':
-    dataset_builder = tfds.builder('celeb_a', data_dir='/scratch/cluster/xcliu/tf_datasets/')
+    dataset_builder = tfds.builder('celeb_a', data_dir=config.data.root_path)
     train_split_name = 'train'
     eval_split_name = 'validation'
 
@@ -130,10 +130,10 @@ def get_dataset(config, uniform_dequantization=False, evaluation=False):
       return img
 
   elif config.data.dataset == 'LSUN':
-    dataset_builder = tfds.builder(f'lsun/{config.data.category}', data_dir='/scratch/cluster/xcliu/tf_datasets/')
-    #train_split_name = 'train'
-    #eval_split_name = 'validation'
-    train_split_name = eval_split_name = 'train' ### NOTE: XC change for cats, horses, etc..
+    dataset_builder = tfds.builder(f'lsun/{config.data.category}', data_dir=config.data.root_path)
+    train_split_name = 'train'
+    eval_split_name = 'validation'
+    #train_split_name = eval_split_name = 'train' ### NOTE: XC change for cats, horses, etc..
 
     if config.data.image_size == 128:
       def resize_op(img):
@@ -149,7 +149,7 @@ def get_dataset(config, uniform_dequantization=False, evaluation=False):
         return img
 
   elif config.data.dataset in ['FFHQ', 'CelebAHQ']:
-    dataset_builder = tf.data.TFRecordDataset(config.data.tfrecords_path, data_dir='/scratch/cluster/xcliu/tf_datasets/')
+    dataset_builder = tf.data.TFRecordDataset(config.data.tfrecords_path, data_dir=config.data.root_path)
     train_split_name = eval_split_name = 'train'
 
   else:
@@ -206,21 +206,15 @@ def get_dataset(config, uniform_dequantization=False, evaluation=False):
   return train_ds, eval_ds, dataset_builder
 
 def get_pytorch_dataset(config):
-    import xcliu_pytorch_datasets as tds
+    import pytorch_datasets as tds
     import torchvision.transforms as tr
     if config.data.dataset == 'CelebA-HQ-Pytorch':
         transform = tr.Resize(256)
         return tds.celeba_hq_dataset(config.training.batch_size, transform), tds.celeba_hq_dataset(config.training.batch_size, transform)
-    elif config.data.dataset == 'LSUN-CAT-Pytorch':
-        transform = tr.CenterCrop(256)
-        return tds.lsun_cat_dataset(config.training.batch_size, transform), tds.lsun_cat_dataset(config.training.batch_size, transform)
-    elif config.data.dataset == 'LSUN-BUS-Pytorch':
-        transform = tr.CenterCrop(256)
-        return tds.lsun_bus_dataset(config.training.batch_size, transform), tds.lsun_bus_dataset(config.training.batch_size, transform)
     elif config.data.dataset == 'AFHQ-CAT-Pytorch': 
         transform = tr.Resize(256)
         return tds.afhq_dataset(config.training.batch_size, 'cat', transform), tds.afhq_dataset(config.training.batch_size, 'cat', transform)
-    elif config.data.dataset == 'Rematch-Pytorch': 
-        return tds.rematch_dataset(config.training.batch_size, 'train'), tds.rematch_dataset(config.training.batch_size, 'validation')
+    elif config.data.dataset == 'Reflow-Pytorch': 
+        return tds.reflow_dataset(config.training.batch_size, 'train'), tds.rematch_dataset(config.training.batch_size, 'validation')
     else:
         assert False, 'Not implemented'

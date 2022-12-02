@@ -51,6 +51,7 @@ def get_default_configs():
   data.uniform_dequantization = False
   data.centered = False
   data.num_channels = 3
+  data.root_path = '/scratch/cluster/xcliu/tf_datasets/'
 
   # model
   config.model = model = ml_collections.ConfigDict()

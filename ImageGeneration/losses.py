@@ -147,7 +147,7 @@ def get_ddpm_loss_fn(vpsde, train, reduce_mean=True):
 
   return loss_fn
 
-def get_mixup_loss_fn(sde, train, reduce_mean=True, eps=1e-3):
+def get_rectified_flow_loss_fn(sde, train, reduce_mean=True, eps=1e-3):
   reduce_op = torch.mean if reduce_mean else lambda *args, **kwargs: 0.5 * torch.sum(*args, **kwargs)
 
   def loss_fn(model, batch):
@@ -160,41 +160,27 @@ def get_mixup_loss_fn(sde, train, reduce_mean=True, eps=1e-3):
     Returns:
       loss: A scalar that represents the average loss value across the mini-batch.
     """
-    if sde.rematching:
-        #z0 = sde.rode(batch)
+    if sde.reflow_flag:
         z0 = batch[0]
         data = batch[1]
         batch = data.detach().clone()
 
-        '''
-        print(z0.mean(), z0.std())
-        
-        import seaborn as sns
-        import matplotlib.pyplot as plt
-        ax=plt.subplot(111)
-        sns.kdeplot(z0.reshape(-1).squeeze().cpu().numpy(), color='red', bw_method=0.1, ax=ax)
-        ax.set_title('init')
-        ax.set_xlim(-5., 5.)
-        ax.set_ylim(0.0,1.1)
-        plt.savefig('figs/init_dist.png')
-        plt.clf()
-        assert False
-        '''
     else:
         z0 = sde.get_z0(batch).to(batch.device)
     
-    if sde.rematching:
-        if sde.rematching_t_schedule=='t0':
+    if sde.reflow_flag:
+        if sde.reflow_t_schedule=='t0': ### distill for t = 0 (k=1)
             t = torch.zeros(batch.shape[0], device=batch.device) * (sde.T - eps) + eps
-        elif sde.rematching_t_schedule=='t1':
+        elif sde.reflow_t_schedule=='t1': ### reverse distill for t=1 (fast embedding)
             t = torch.ones(batch.shape[0], device=batch.device) * (sde.T - eps) + eps
-        elif sde.rematching_t_schedule=='uniform':
+        elif sde.reflow_t_schedule=='uniform': ### train new rectified flow with reflow
             t = torch.rand(batch.shape[0], device=batch.device) * (sde.T - eps) + eps
-        elif type(sde.rematching_t_schedule)==int:
-            t = torch.randint(0, sde.rematching_t_schedule, (batch.shape[0], ), device=batch.device) * (sde.T - eps) / sde.rematching_t_schedule + eps
+        elif type(sde.reflow_t_schedule)==int: ### k > 1 distillation
+            t = torch.randint(0, sde.reflow_t_schedule, (batch.shape[0], ), device=batch.device) * (sde.T - eps) / sde.reflow_t_schedule + eps
         else:
             assert False, 'Not implemented'
     else:
+        ### standard rectified flow loss
         t = torch.rand(batch.shape[0], device=batch.device) * (sde.T - eps) + eps
 
     t_expand = t.view(-1, 1, 1, 1).repeat(1, batch.shape[1], batch.shape[2], batch.shape[3])
@@ -204,18 +190,16 @@ def get_mixup_loss_fn(sde, train, reduce_mean=True, eps=1e-3):
     model_fn = mutils.get_model_fn(model, train=train)
     score = model_fn(perturbed_data, t*999) ### Copy from models/utils.py 
 
-    if sde.rematching:
-        if sde.rematching_loss=='l2':
+    if sde.reflow_flag:
+        ### we found LPIPS loss is the best for distillation when k=1; but good to have a try
+        if sde.reflow_loss=='l2':
+            ### train new rectified flow with reflow or distillation with L2 loss
             losses = torch.square(score - target)
-        elif sde.rematching_loss=='l1':
-            losses = torch.abs(score - target)
-        elif sde.rematching_loss=='logl1':
-            losses = (torch.abs(score - target)+1e-3).log()
-        elif sde.rematching_loss=='lpips':
-            assert sde.rematching_t_schedule=='t0'
+        elif sde.reflow_loss=='lpips':
+            assert sde.reflow_t_schedule=='t0'
             losses = sde.lpips_model(z0 + score, batch)
-        elif sde.rematching_loss=='lpips+l2':
-            assert sde.rematching_t_schedule=='t0'
+        elif sde.reflow_loss=='lpips+l2':
+            assert sde.reflow_t_schedule=='t0'
             lpips_losses = sde.lpips_model(z0 + score, batch).view(batch.shape[0], 1)
             l2_losses = torch.square(score - target).view(batch.shape[0], -1).mean(dim=1, keepdim=True)
             losses = lpips_losses + l2_losses
@@ -256,8 +240,8 @@ def get_step_fn(sde, train, optimize_fn=None, reduce_mean=False, continuous=True
       loss_fn = get_smld_loss_fn(sde, train, reduce_mean=reduce_mean)
     elif isinstance(sde, VPSDE):
       loss_fn = get_ddpm_loss_fn(sde, train, reduce_mean=reduce_mean)
-    elif isinstance(sde, MIXUP):
-      loss_fn = get_mixup_loss_fn(sde, train, reduce_mean=reduce_mean)
+    elif isinstance(sde, RectifiedFlow):
+      loss_fn = get_rectified_flow_loss_fn(sde, train, reduce_mean=reduce_mean)
     else:
       raise ValueError(f"Discrete training for {sde.__class__.__name__} is not recommended.")
 

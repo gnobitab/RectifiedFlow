@@ -25,7 +25,11 @@ We provide interactive tutorials with Colab notebooks to walk you through the wh
 
 ## Image Generation
 
+Work in progress.
+
 ## Image-to-Image Translation
+
+Work in progress.
 
 ## Citation
 If you use the code or our work is related to yours, please cite us:

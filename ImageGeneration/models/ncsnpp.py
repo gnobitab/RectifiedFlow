@@ -176,12 +176,6 @@ class NCSNpp(nn.Module):
     modules.append(AttnBlock(channels=in_ch))
     modules.append(ResnetBlock(in_ch=in_ch))
 
-    #num_params = 0
-    #for mm in modules:
-    #  for p in mm.parameters():
-    #      num_params += p.numel()
-    #print('parameters in encoder:', num_params)
-
     pyramid_ch = 0
     # Upsampling block
     for i_level in reversed(range(num_resolutions)):
@@ -235,11 +229,6 @@ class NCSNpp(nn.Module):
 
     self.all_modules = nn.ModuleList(modules)
 
-    #num_params_all = 0
-    #for mm in modules:
-    #  for p in mm.parameters():
-    #      num_params_all += p.numel()
-    #print('parameters in decoder:', num_params_all - num_params)
 
   def forward(self, x, time_cond):
     # timestep/noise_level embedding; only for continuous training
@@ -277,16 +266,12 @@ class NCSNpp(nn.Module):
     if self.progressive_input != 'none':
       input_pyramid = x
     
-    #print(m_idx)
     hs = [modules[m_idx](x)]
     m_idx += 1
     for i_level in range(self.num_resolutions):
       # Residual blocks for this resolution
-      #print('i level:', i_level)
       for i_block in range(self.num_res_blocks):
-        #print('in shape:', hs[-1].shape)
         h = modules[m_idx](hs[-1], temb)
-        #print('out shape:', h.shape)
         m_idx += 1
         if h.shape[-1] in self.attn_resolutions:
           h = modules[m_idx](h)
@@ -318,10 +303,6 @@ class NCSNpp(nn.Module):
 
         hs.append(h)
     
-    #print(len(hs)) 
-    #for h in hs:
-    #  print(h.shape, h.min(), h.max())
-    #assert False
 
     h = hs[-1]
     h = modules[m_idx](h, temb)
