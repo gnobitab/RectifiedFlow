@@ -66,23 +66,57 @@ which uses a batch size of 1024 to sample 50000 images, starting from checkpoint
 
 To prepare data for reflow, run the following command
 ```
-python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_ddpmpp.py --eval_folder eval --mode train --workdir ./logs/1_rectified_flow
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_reflow_generate_data.py  --eval_folder eval --mode reflow --workdir ./logs/tmp --config.reflow.last_flow_ckpt "./logs/1_rectified_flow/checkpoints/checkpoint-10.pth" --config.reflow.data_root "./assets/reflow_data/1_rectified_flow/" --config.reflow.total_number_of_samples 100000 --config.seed 0
 ```
 
+* ```--config.reflow.last_flow_ckpt``` The checkpoint for data generation.
+
+* ```--config.reflow.data_root``` The location where you would like the generated pairs to be saved. The $(Z_0, Z_1)$ pairs will be saved to ```./data_root/seed/```
+
+* ```--config.reflow.total_number_of_samples``` The total number of pairs you would like to generate
+
+* ```--config.seed``` The random seed. Change random seed to perform data generation in parallel.
+
+For CIFAR10, we suggest to generate at least 1M pairs for reflow.
 
 ### Reflow to get 2-Rectified Flow with the Generated Data Pair
 
+After the data pairs are generated, run the following command to train 2-rectified flow
+
+```
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_reflow_train.py  --eval_folder eval --mode reflow --workdir ./logs/2_rectified_flow --config.reflow.last_flow_ckpt "./logs/1_rectified_flow/checkpoints/checkpoint-10.pth" --config.reflow.data_root "./assets/reflow_data/1_rectified_flow/"
+```
+
+This command fine-tunes the checkpoint of 1-Rectified Flow with the data pairs generated in the last step, and save the logs of 2-rectified flow to ```./logs/2_rectified_flow```.
 2-Rectified Flow should have a much better performance when using one-step generation $z_1=z_0 + v(z_0, 0)$, as shown in the following figure:
 
 ![](github_misc/intro_cifar.png)
 
+To evaluate with step N=1, run
+```
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_ddpmpp.py --eval_folder eval --mode eval --workdir ./logs/2_rectified_flow --config.sampling.use_ode_sampler "euler" --config.sampling.sample_N 1 --config.eval.enable_sampling  --config.eval.batch_size 1024 --config.eval.num_samples 50000 --config.eval.begin_ckpt 2
+```
+where ```sample_N``` refers to the number of sampling steps.
+
 We can further improve the quality of 2-Rectified Flow in one-step generation with distillation.
 
 ### Distill to get one-step 2-Rectified Flow 
+Before distillation, we need new data pairs from 2-Rectified Flow. This can be simply done with
+```
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_reflow_generate_data.py  --eval_folder eval --mode reflow --workdir ./logs/tmp --config.reflow.last_flow_ckpt "./logs/2_rectified_flow/checkpoints/checkpoint-10.pth" --config.reflow.data_root "./assets/reflow_data/2_rectified_flow/" --config.reflow.total_number_of_samples 100000 --config.seed 0
+```
 
+Then we can distill 2-Rectified Flow with
+```
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_reflow_distill_k=1.py  --eval_folder eval --mode reflow --workdir ./logs/2_rectified_flow_k=1_distill --config.reflow.last_flow_ckpt "./logs/2_rectified_flow/checkpoints/checkpoint-10.pth" --config.reflow.data_root "./assets/reflow_data/2_rectified_flow/"
+```
 
 ### Distill to get k-step 2-Rectified Flow (k>1)
-
+Similarly, we can distill 2-Rectified Flow for k-step generation (k>1) with
+```
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_reflow_distill_k_g_1.py  --eval_folder eval --mode reflow --config.reflow.reflow_t_schedule 2 --workdir ./logs/2_rectified_flow_k=2_distill --config.reflow.last_flow_ckpt "./logs/2_rectified_flow/checkpoints/checkpoint-10.pth" --config.reflow.data_root "./assets/reflow_data/2_rectified_flow/"
+```
+Here, we use k=2 as an example. Change ```--config.reflow.reflow_t_schedule``` to accomodate for different k. 
 
 ### Pre-trained Checkpoints
 Work in progress.
