@@ -16,11 +16,9 @@
 """Training and evaluation"""
 
 import run_lib
-import run_lib_get_gmm
-import run_lib_rematch
+import run_lib_reflow
 import run_lib_pytorch
-import run_lib_rematch_pytorch
-import run_lib_inversion
+import run_lib_reflow_pytorch
 from absl import app
 from absl import flags
 from ml_collections.config_flags import config_flags
@@ -33,7 +31,7 @@ FLAGS = flags.FLAGS
 config_flags.DEFINE_config_file(
   "config", None, "Training configuration.", lock_config=True)
 flags.DEFINE_string("workdir", None, "Work directory.")
-flags.DEFINE_enum("mode", None, ["train", "eval", "get_gmm", "rematch", "rematch-pytorch", "inversion"], "Running mode: train or eval")
+flags.DEFINE_enum("mode", None, ["train", "eval", "reflow", "reflow-pytorch"], "Running mode")
 flags.DEFINE_string("eval_folder", "eval",
                     "The folder name for storing evaluation results")
 flags.mark_flags_as_required(["workdir", "config", "mode"])
@@ -64,9 +62,9 @@ def main(argv):
     else:
         run_lib.evaluate(FLAGS.config, FLAGS.workdir, FLAGS.eval_folder)
   elif  FLAGS.mode == "reflow-pytorch":
-    run_lib_rematch_pytorch.train(FLAGS.config, FLAGS.workdir) 
+    run_lib_reflow_pytorch.finetune_reflow(FLAGS.config, FLAGS.workdir) 
   elif  FLAGS.mode == "reflow":
-    run_lib_rematch.finetune_rematching(FLAGS.config, FLAGS.workdir)
+    run_lib_reflow.finetune_reflow(FLAGS.config, FLAGS.workdir)
   else:
     raise ValueError(f"Mode {FLAGS.mode} not recognized.")
 

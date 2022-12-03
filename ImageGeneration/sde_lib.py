@@ -255,7 +255,7 @@ class VESDE(SDE):
     return f, G
 
 class RectifiedFlow():
-    def __init__(self, init_type='gaussian', noise_scale=1.0, reflow_flag=False, reflow_t_schedule='uniform', reflow_loss='l2', target_model=None, use_ode_sampler='rk45', sigma_var=0.0, ode_tol=1e-5, sample_N=None):
+    def __init__(self, init_type='gaussian', noise_scale=1.0, reflow_flag=False, reflow_t_schedule='uniform', reflow_loss='l2', use_ode_sampler='rk45', sigma_var=0.0, ode_tol=1e-5, sample_N=None):
       if sample_N is not None:
         self.sample_N = sample_N
         print('Number of sampling steps:', self.sample_N)
@@ -279,12 +279,6 @@ class RectifiedFlow():
               self.lpips_model = self.lpips_model.cuda()
               for p in self.lpips_model.parameters():
                   p.requires_grad = False
-
-          import copy
-          self.target_model = copy.deepcopy(target_model)
-          self.target_model.eval()
-          for p in self.target_model.parameters():
-              p.requires_grad = False
 
 
     @property
