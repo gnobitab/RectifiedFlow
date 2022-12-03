@@ -38,6 +38,39 @@ Run the following to install a subset of necessary python packages for our code
 pip install -r requirements.txt
 ```
 
+### Train 1-Rectified Flow
+Run the following command to train a 1-Rectified Flow from scratch
+
+```
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_ddpmpp.py --eval_folder eval --mode train --workdir ./logs/1_rectified_flow
+```
+
+* ```--config``` The configuration file for this run.
+
+* ```--eval_folder``` The generated images and other files for each evaluation during training will be stroed in ```./--workdir/--eval_folder```. In this command, it is ```./logs/1_rectified_flow/eval/```
+
+* ```---mode``` Mode selection for ```main.py```. Select from ```train```, ```eval``` and ```reflow```.
+
+
+### Generate Data Pair $(Z_0, Z_1)$ with 1-Rectified Flow
+
+### Reflow to get 2-Rectified Flow with the Generated Data Pair
+
+2-Rectified Flow should have a much better performance when using one-step generation $z_1=z_0 + v(z_0, 0)$, as shown in the following figure:
+
+![](assets/intro_cifar.png)
+
+We can further improve the quality of 2-Rectified Flow in one-step generation with distillation.
+
+### Distill to get one-step 2-Rectified Flow 
+
+
+### Distill to get k-step 2-Rectified Flow (k>1)
+
+
+
+### Pre-trained Checkpoints
+Work in progress.
 
 ## Image-to-Image Translation
 
