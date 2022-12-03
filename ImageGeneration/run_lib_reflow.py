@@ -110,7 +110,7 @@ def finetune_reflow(config, workdir):
     sde = sde_lib.VESDE(sigma_min=config.model.sigma_min, sigma_max=config.model.sigma_max, N=config.model.num_scales)
     sampling_eps = 1e-5
   elif config.training.sde.lower() == 'rectified_flow':
-    sde = sde_lib.RectifiedFlow(init_type=config.sampling.init_type, noise_scale=config.sampling.init_noise_scale, reflow_flag=True, reflow_t_schedule=config.sampling.reflow_t_schedule, reflow_loss=config.sampling.reflow_loss, use_ode_sampler=config.sampling.use_ode_sampler)
+    sde = sde_lib.RectifiedFlow(init_type=config.sampling.init_type, noise_scale=config.sampling.init_noise_scale, reflow_flag=True, reflow_t_schedule=config.reflow.reflow_t_schedule, reflow_loss=config.reflow.reflow_loss, use_ode_sampler=config.sampling.use_ode_sampler)
     sampling_eps = 1e-3
   else:
     raise NotImplementedError(f"SDE {config.training.sde} unknown.")
@@ -137,8 +137,8 @@ def finetune_reflow(config, workdir):
 
   data_root = config.reflow.data_root #'/scratch/cluster/xcliu/ODE_Diffusion/assets/afhq_cat_rematch_data_reflow_iter_1/'
   print('DATA PATH:', data_root)
-  print('T SCHEDULE:', config.sampling.reflow_t_schedule, 'LOSS:', config.sampling.reflow_loss)
-  if config.sampling.reflow_type == 'generate_data_from_z0':
+  print('T SCHEDULE:', config.reflow.reflow_t_schedule, 'LOSS:', config.reflow.reflow_loss)
+  if config.reflow.reflow_type == 'generate_data_from_z0':
       # NOTE: Prepare reflow dataset with ODE
       print('Start generating data with ODE from z0', ', SEED:', config.seed)
       
@@ -166,7 +166,7 @@ def finetune_reflow(config, workdir):
       print('Successfully generated z1 from random z0 with random seed:', config.seed, 'Total number of pairs:', data_step*config.training.batch_size)
       sys.exit(0)
 
-  elif config.sampling.rematch_type == 'train_reflow':
+  elif config.reflow.reflow_type == 'train_reflow':
       # NOTE: load existing dataset
       print('START training with (Z0, Z1) pair')
       

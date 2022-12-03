@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # Lint as: python3
-"""Training NCSNv3 on CIFAR-10 with continuous sigmas."""
+"""Training Rectified Flow on CIFAR-10 with DDPM++."""
 
 from configs.default_cifar10_configs import get_default_configs
 

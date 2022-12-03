@@ -25,7 +25,19 @@ We provide interactive tutorials with Colab notebooks to walk you through the wh
 
 ## Image Generation
 
-Work in progress.
+The code for image generation is in ```./ImageGeneration ```. Run the following command first
+
+```
+cd ./ImageGeneration
+```
+
+### Dependencies
+Run the following to install a subset of necessary python packages for our code
+
+```
+pip install -r requirements.txt
+```
+
 
 ## Image-to-Image Translation
 

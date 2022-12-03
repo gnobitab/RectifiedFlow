@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # Lint as: python3
-"""Training NCSN++ on CelebA with VE SDE."""
+"""Training rectified Flow on CelebA HQ."""
 
 from configs.default_lsun_configs import get_default_configs
 
@@ -23,17 +23,17 @@ def get_config():
   config = get_default_configs()
   # training 
   training = config.training
-  training.sde = 'mixup'
+  training.sde = 'rectified_flow'
   training.continuous = False
   training.reduce_mean = True
   training.snapshot_freq = 100000
 
   # sampling
   sampling = config.sampling
-  sampling.method = 'mixup'
-  sampling.init_type = 'gaussian' ### NOTE: gaussian, cifar_distribution
+  sampling.method = 'rectified_flow'
+  sampling.init_type = 'gaussian' 
   sampling.init_noise_scale = 1.0
-  sampling.use_ode_sampler = True
+  sampling.use_ode_sampler = 'rk45'
 
   # data
   data = config.data
