@@ -18,7 +18,6 @@
 import run_lib
 import run_lib_reflow
 import run_lib_pytorch
-import run_lib_reflow_pytorch
 from absl import app
 from absl import flags
 from ml_collections.config_flags import config_flags
@@ -61,8 +60,6 @@ def main(argv):
         run_lib_pytorch.evaluate(FLAGS.config, FLAGS.workdir, FLAGS.eval_folder)
     else:
         run_lib.evaluate(FLAGS.config, FLAGS.workdir, FLAGS.eval_folder)
-  elif  FLAGS.mode == "reflow-pytorch":
-    run_lib_reflow_pytorch.finetune_reflow(FLAGS.config, FLAGS.workdir) 
   elif  FLAGS.mode == "reflow":
     run_lib_reflow.finetune_reflow(FLAGS.config, FLAGS.workdir)
   else:

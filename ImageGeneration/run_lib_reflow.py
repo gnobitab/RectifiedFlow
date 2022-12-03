@@ -139,8 +139,8 @@ def finetune_reflow(config, workdir):
   print('DATA PATH:', data_root)
   print('T SCHEDULE:', config.sampling.reflow_t_schedule, 'LOSS:', config.sampling.reflow_loss)
   if config.sampling.reflow_type == 'generate_data_from_z0':
-      # NOTE: XC: Prepare initial dataset with ODE
-      print('Start generating FAKE data with ODE', ', SEED:', config.seed)
+      # NOTE: Prepare reflow dataset with ODE
+      print('Start generating data with ODE from z0', ', SEED:', config.seed)
       
       loaded_ema.copy_to(score_model.parameters())
       data_cllt = []
@@ -148,7 +148,7 @@ def finetune_reflow(config, workdir):
       for data_step in range(config.reflow.total_number_of_samples // config.training.batch_size):
         print(data_step)
         z0 = sde.get_z0(torch.zeros((config.training.batch_size, 3, config.data.image_size, config.data.image_size), device=config.device), train=False).to(config.device)
-        batch = sde.ode(z0, score_model, inverse_scaler)
+        batch = sde.ode(z0, score_model)
         
         print(batch.shape, batch.max(), batch.min(), z0.mean(), z0.std())
 
@@ -197,7 +197,7 @@ def finetune_reflow(config, workdir):
 
   print('Initial step of the model:', initial_step)
   # In case there are multiple hosts (e.g., TPU pods), only log to host 0
-  logging.info("Starting training loop at step %d." % (initial_step,))
+  logging.info("Starting reflow training loop at step %d." % (initial_step,))
 
   for step in range(initial_step, num_train_steps + 1):
     # Convert data to JAX arrays and normalize them. Use ._numpy() to avoid copy.
