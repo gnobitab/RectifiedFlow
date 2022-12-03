@@ -66,7 +66,7 @@ def finetune_reflow(config, workdir):
 
   ### NOTE: load pre-trained checkpoint
   
-  ckpt_dir = config.reflow.last_flow_ckpt #'/scratch/cluster/xcliu/ODE_Diffusion/logs/rematching_finetune_afhq_cat_mixup_gaussian_uniform_lpips_restart_opt_and_ema_from_org/checkpoints/checkpoint_12.pth'
+  ckpt_dir = config.reflow.last_flow_ckpt 
   loaded_state = torch.load(ckpt_dir, map_location=config.device)
   score_model.load_state_dict(loaded_state['model'], strict=False)
   loaded_ema = ExponentialMovingAverage(score_model.parameters(), decay=config.model.ema_rate)
@@ -135,7 +135,7 @@ def finetune_reflow(config, workdir):
 
   num_train_steps = config.training.n_iters
 
-  data_root = config.reflow.data_root #'/scratch/cluster/xcliu/ODE_Diffusion/assets/afhq_cat_rematch_data_reflow_iter_1/'
+  data_root = config.reflow.data_root 
   print('DATA PATH:', data_root)
   print('T SCHEDULE:', config.reflow.reflow_t_schedule, 'LOSS:', config.reflow.reflow_loss)
   if config.reflow.reflow_type == 'generate_data_from_z0':

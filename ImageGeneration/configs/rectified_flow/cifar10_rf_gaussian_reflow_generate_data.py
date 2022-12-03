@@ -43,6 +43,7 @@ def get_config():
   reflow.reflow_loss = 'l2' # NOTE: l2, lpips, lpips+l2; not necessary in this config file for data generation
   reflow.last_flow_ckpt = 'ckpt_path' # NOTE: the rectified flow model to generate data
   reflow.data_root = 'data_path' # NOTE: the folder to store the generated data
+  reflow.total_number_of_samples = 10000 # NOTE: total number of generated samples
 
   # data
   data = config.data

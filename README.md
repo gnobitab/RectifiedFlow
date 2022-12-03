@@ -12,11 +12,11 @@ Then, by a **reflow** operation, we iteratively straighten the ODE trajectories 
 
 An introductory website can be found [here](https://www.cs.utexas.edu/~lqiang/rectflow/html/intro.html) and the main idea is illustrated in the following figure:
 
-![](assets/intro_two_gauss.png)
+![](github_misc/intro_two_gauss.png)
 
 Rectified Flow can be applied to both generative modeling and unsupervised domain transfer, as shown in the following figure:
 
-![](assets/intro_rf.jpeg)
+![](github_misc/intro_rf.jpeg)
 
 For a more thorough inspection on the theoretical properties and its relationship to optimal transport, please refer to [Rectified Flow: A Marginal Preserving Approach to Optimal Transport](https://arxiv.org/abs/2209.14577)
 
@@ -47,18 +47,34 @@ python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_ddpmpp.py
 
 * ```--config``` The configuration file for this run.
 
-* ```--eval_folder``` The generated images and other files for each evaluation during training will be stroed in ```./--workdir/--eval_folder```. In this command, it is ```./logs/1_rectified_flow/eval/```
+* ```--eval_folder``` The generated images and other files for each evaluation during training will be stroed in ```./workdir/eval_folder```. In this command, it is ```./logs/1_rectified_flow/eval/```
 
 * ```---mode``` Mode selection for ```main.py```. Select from ```train```, ```eval``` and ```reflow```.
 
+### Sampling and Evaluation
+
+We follow the evaluation pipeline as in [Score SDE](https://github.com/yang-song/score_sde_pytorch). You can download [`cifar10_stats.npz`](https://drive.google.com/file/d/14UB27-Spi8VjZYKST3ZcT8YVhAluiFWI/view?usp=sharing) and save it to `assets/stats/`. 
+Then run
+
+```
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_ddpmpp.py --eval_folder eval --mode eval --workdir ./logs/1_rectified_flow --config.eval.enable_sampling  --config.eval.batch_size 1024 --config.eval.num_samples 50000 --config.eval.begin_ckpt 2
+```
+
+which uses a batch size of 1024 to sample 50000 images, starting from checkpoint-2.pth, and computes the FID and IS.
 
 ### Generate Data Pair $(Z_0, Z_1)$ with 1-Rectified Flow
+
+To prepare data for reflow, run the following command
+```
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_ddpmpp.py --eval_folder eval --mode train --workdir ./logs/1_rectified_flow
+```
+
 
 ### Reflow to get 2-Rectified Flow with the Generated Data Pair
 
 2-Rectified Flow should have a much better performance when using one-step generation $z_1=z_0 + v(z_0, 0)$, as shown in the following figure:
 
-![](assets/intro_cifar.png)
+![](github_misc/intro_cifar.png)
 
 We can further improve the quality of 2-Rectified Flow in one-step generation with distillation.
 
@@ -66,7 +82,6 @@ We can further improve the quality of 2-Rectified Flow in one-step generation wi
 
 
 ### Distill to get k-step 2-Rectified Flow (k>1)
-
 
 
 ### Pre-trained Checkpoints
