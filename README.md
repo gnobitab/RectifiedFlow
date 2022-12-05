@@ -121,6 +121,17 @@ Here, we use k=2 as an example. Change ```--config.reflow.reflow_t_schedule``` t
 ### Pre-trained Checkpoints
 Work in progress.
 
+As an example, to use pre-trained checkpoints, download the ```checkpoint_8.pth``` from CIFAR10 1-Rectified Flow](https://drive.google.com/file/d/10aPF5KC30SjVwr6rOnNosStpSGXnELXn/view?usp=sharing), put it in ```./logs/1_rectified_flow/checkpoints/```, then run
+
+```
+python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_ddpmpp.py --eval_folder eval --mode eval --workdir ./logs/1_rectified_flow --config.eval.enable_sampling  --config.eval.batch_size 1024 --config.eval.num_samples 50000 --config.eval.begin_ckpt 8
+```
+
+
+The pre-trained checkpoints are listed here:
+
+* [CIFAR10 1-Rectified Flow](https://drive.google.com/file/d/10aPF5KC30SjVwr6rOnNosStpSGXnELXn/view?usp=sharing)
+
 ## Image-to-Image Translation
 
 Work in progress.
