@@ -1,4 +1,4 @@
-# RectifiedFlow
+# Rectified Flow
 
 This is the official implementation of paper 
 ## [Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow](https://arxiv.org/abs/2209.03003) 
