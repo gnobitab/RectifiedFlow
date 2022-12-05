@@ -20,7 +20,7 @@ import torch
 import torch.optim as optim
 import numpy as np
 from models import utils as mutils
-from sde_lib import VESDE, VPSDE, MIXUP
+from sde_lib import VESDE, VPSDE, RectifiedFlow
 
 
 def get_optimizer(config, params):

@@ -575,6 +575,9 @@ def get_rectified_flow_sampler(sde, shape, inverse_scaler, device='cuda'):
       x = torch.tensor(solution.y[:, -1]).reshape(shape).to(device).type(torch.float32)
 
       x = inverse_scaler(x)
+      
+      import torchvision
+      torchvision.utils.save_image(x.clamp_(0.0, 1.0), '/scratch/cluster/xcliu/RectifiedFlow/test_logs/cifar10.png', nrow=16, normalize=False)
 
       return x, nfe
   

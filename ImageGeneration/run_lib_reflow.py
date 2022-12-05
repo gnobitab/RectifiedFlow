@@ -159,11 +159,13 @@ def finetune_reflow(config, workdir):
       data_cllt = torch.cat(data_cllt)
       print(data_cllt.shape, z0_cllt.shape)
       print(z0_cllt.mean(), z0_cllt.std())
-      np.save(os.path.join(data_root, config.seed, 'z1.npy'%config.seed), data_cllt.numpy())
-      np.save(os.path.join(data_root, config.seed, 'z0.npy'%config.seed), z0_cllt.numpy())
+      if not os.path.exists(os.path.join(data_root, str(config.seed))):
+        os.mkdir(os.path.join(data_root, str(config.seed)))
+      np.save(os.path.join(data_root, str(config.seed), 'z1.npy'), data_cllt.numpy())
+      np.save(os.path.join(data_root, str(config.seed), 'z0.npy'), z0_cllt.numpy())
 
       import sys 
-      print('Successfully generated z1 from random z0 with random seed:', config.seed, 'Total number of pairs:', data_step*config.training.batch_size)
+      print('Successfully generated z1 from random z0 with random seed:', config.seed, 'Total number of pairs:', (data_step+1)*config.training.batch_size)
       sys.exit(0)
 
   elif config.reflow.reflow_type == 'train_reflow':
@@ -173,7 +175,7 @@ def finetune_reflow(config, workdir):
       z0_cllt = []
       data_cllt = []
       folder_list = os.listdir(data_root)
-      for foler in folder_list:
+      for folder in folder_list:
           print('FOLDER:', folder)
           z0 = np.load(os.path.join(data_root, folder, 'z0.npy'))
           print('Loaded z0')
@@ -185,7 +187,7 @@ def finetune_reflow(config, workdir):
           z0_cllt.append(z0)
           data_cllt.append(data)
           print('z0 shape:', z0.shape, 'z0 min:', z0.min(), 'z0 max:', z0.max())
-          print('z1 shape:', data.shape, 'z1 min:', data.min(), 'z1 max:', data.max()
+          print('z1 shape:', data.shape, 'z1 min:', data.min(), 'z1 max:', data.max())
       
       print('Successfully Loaded (z0, z1) pairs!!!')
       z0_cllt = torch.cat(z0_cllt)

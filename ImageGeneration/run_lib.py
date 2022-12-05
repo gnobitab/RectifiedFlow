@@ -218,8 +218,8 @@ def evaluate(config,
   elif config.training.sde.lower() == 'vesde':
     sde = sde_lib.VESDE(sigma_min=config.model.sigma_min, sigma_max=config.model.sigma_max, N=config.model.num_scales)
     sampling_eps = 1e-5
-  elif config.training.sde.lower() == 'mixup':
-    sde = sde_lib.MIXUP(init_type=config.sampling.init_type, noise_scale=config.sampling.init_noise_scale, N=config.model.num_scales, use_ode_sampler=config.sampling.use_ode_sampler, sigma_var=config.sampling.sigma_variance, ode_tol=config.sampling.ode_tol, sample_N=config.sampling.sample_N)
+  elif config.training.sde.lower() == 'rectified_flow':
+    sde = sde_lib.RectifiedFlow(init_type=config.sampling.init_type, noise_scale=config.sampling.init_noise_scale, use_ode_sampler=config.sampling.use_ode_sampler, sigma_var=config.sampling.sigma_variance, ode_tol=config.sampling.ode_tol, sample_N=config.sampling.sample_N)
     sampling_eps = 1e-3
   else:
     raise NotImplementedError(f"SDE {config.training.sde} unknown.")
