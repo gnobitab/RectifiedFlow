@@ -193,7 +193,9 @@ def finetune_reflow(config, workdir):
       z0_cllt = torch.cat(z0_cllt)
       data_cllt = torch.cat(data_cllt)
       print('Shape of z0:', z0_cllt.shape, 'Shape of z1:', data_cllt.shape)
-      
+  
+  elif config.reflow.reflow_type == 'train_online_reflow':      
+      pass
   else:
       assert False, 'Not implemented'
 
@@ -203,9 +205,16 @@ def finetune_reflow(config, workdir):
 
   for step in range(initial_step, num_train_steps + 1):
     # Convert data to JAX arrays and normalize them. Use ._numpy() to avoid copy.
-    indices = torch.randperm(len(data_cllt))[:config.training.batch_size]
-    data = data_cllt[indices].to(config.device).float()
-    z0 = z0_cllt[indices].to(config.device).float()
+    if config.reflow.reflow_type == 'train_reflow':
+        indices = torch.randperm(len(data_cllt))[:config.training.batch_size]
+        data = data_cllt[indices].to(config.device).float()
+        z0 = z0_cllt[indices].to(config.device).float()
+    elif config.reflow.reflow_type == 'train_online_reflow':
+        z0 = sde.get_z0(torch.zeros((config.training.batch_size, 3, config.data.image_size, config.data.image_size), device=config.device), train=False).to(config.device)
+        data = sde.euler_ode(z0, ema_score_model, N=20)
+        z0 = z0.to(config.device).float()
+        data = data.to(config.device).float()
+
     batch = [z0, data]
     
     # Execute one training step
@@ -220,11 +229,18 @@ def finetune_reflow(config, workdir):
 
     # Report the loss on an evaluation dataset periodically
     if step % config.training.eval_freq == 0:
-      indices = torch.randperm(len(data_cllt))[:config.training.batch_size]
-      data = data_cllt[indices].to(config.device).float()
-      z0 = z0_cllt[indices].to(config.device).float()
+      if config.reflow.reflow_type == 'train_reflow':
+          indices = torch.randperm(len(data_cllt))[:config.training.batch_size]
+          data = data_cllt[indices].to(config.device).float()
+          z0 = z0_cllt[indices].to(config.device).float()
+      elif config.reflow.reflow_type == 'train_online_reflow':
+          z0 = sde.get_z0(torch.zeros((config.training.batch_size, 3, config.data.image_size, config.data.image_size), device=config.device), train=False).to(config.device)
+          data = sde.euler_ode(z0, ema_score_model, N=20)
+          z0 = z0.to(config.device).float()
+          data = data.to(config.device).float()
+
       eval_batch = [z0, data]
-      
+ 
       eval_loss = eval_step_fn(state, eval_batch)
       logging.info("step: %d, eval_loss: %.5e" % (step, eval_loss.item()))
       writer.add_scalar("eval_loss", eval_loss.item(), step)

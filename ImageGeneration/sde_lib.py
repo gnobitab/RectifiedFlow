@@ -316,7 +316,29 @@ class RectifiedFlow():
                                      rtol=rtol, atol=atol, method=method)
       x = torch.tensor(solution.y[:, -1]).reshape(shape).to(device).type(torch.float32)
       nfe = solution.nfev
-      print('NFE:', nfe) 
+      #print('NFE:', nfe) 
+
+      return x
+
+    @torch.no_grad()
+    def euler_ode(self, init_input, model, reverse=False, N=100):
+      ### run ODE solver for reflow. init_input can be \pi_0 or \pi_1
+      eps=1e-3
+      dt = 1./N
+
+      # Initial sample
+      x = init_input.detach().clone()
+
+      model_fn = mutils.get_model_fn(model, train=False)
+      shape = init_input.shape
+      device = init_input.device
+      
+      for i in range(N):  
+        num_t = i / N * (self.T - eps) + eps      
+        t = torch.ones(shape[0], device=device) * num_t
+        pred = model_fn(x, t*999)
+        
+        x = x.detach().clone() + pred * dt         
 
       return x
 
