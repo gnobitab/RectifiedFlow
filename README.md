@@ -159,4 +159,4 @@ If you use the code or our work is related to yours, please cite us:
 ```
 
 ## Thanks
-A Large portion of this code base is built upon [Score SDE](https://github.com/yang-song/score_sde_pytorch).
+A Large portion of this codebase is built upon [Score SDE](https://github.com/yang-song/score_sde_pytorch).
