@@ -69,7 +69,7 @@ class NCSNpp(nn.Module):
     # timestep/noise_level embedding; only for continuous training
     if embedding_type == 'fourier':
       # Gaussian Fourier features embeddings.
-      assert config.training.continuous or config.training.sde=='mixup', "Fourier features are only used for continuous training."
+      assert config.training.continuous or config.training.sde=='rectified_flow', "Fourier features are only used for continuous training."
 
       modules.append(layerspp.GaussianFourierProjection(
         embedding_size=nf, scale=config.model.fourier_scale
