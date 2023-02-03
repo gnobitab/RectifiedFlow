@@ -1,6 +1,6 @@
 # Rectified Flow
 
-This is the official implementation of paper 
+This is the official implementation of ICLR2023 Spotlight paper 
 ## [Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow](https://arxiv.org/abs/2209.03003) 
 by *Xingchao Liu, Chengyue Gong, Qiang Liu* from UT Austin
 
@@ -141,7 +141,11 @@ python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_ddpmpp.py
 
 The pre-trained checkpoints are listed here:
 
-* [CIFAR10 1-Rectified Flow](https://drive.google.com/file/d/10aPF5KC30SjVwr6rOnNosStpSGXnELXn/view?usp=sharing)
+* [CIFAR10 1-Rectified Flow](https://drive.google.com/file/d/10aPF5KC30SjVwr6rOnNosStpSGXnELXn/view?usp=sharing) ([Distilled](https://drive.google.com/file/d/15ravhpH39l8OcZmVx5NKaeO0Vwzcuxru/view?usp=sharing))
+
+* [CIFAR10 2-Rectified Flow](https://drive.google.com/file/d/16_5l-rUo7vimsGfHziO23KrWWmd9vlPp/view?usp=sharing) ([Distilled](https://drive.google.com/file/d/1Tf2SxNuKEnLIOLPupSVM3XQFqUWgfq8M/view?usp=sharing))
+
+* [CIFAR10 3-Rectified Flow](https://drive.google.com/file/d/12Mn5nfAwfz4Hcw7AifyhF2AZ4EtEXdu1/view?usp=sharing) ([Distilled](https://drive.google.com/file/d/1V4vxb0tZZy8QuNpkCpO5Ion7vnjuVLhh/view?usp=sharing))
 
 ## Image-to-Image Translation
 
