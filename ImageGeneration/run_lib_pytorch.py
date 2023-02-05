@@ -243,7 +243,7 @@ def evaluate(config,
     likelihood_fn = likelihood.get_likelihood_fn(sde, inverse_scaler)
 
   # Build the sampling function when sampling is enabled
-  if config.eval.enable_sampling:
+  if (config.eval.enable_sampling) or (config.eval.enable_figures_only):
     sampling_shape = (config.eval.batch_size,
                       config.data.num_channels,
                       config.data.image_size, config.data.image_size)
@@ -402,3 +402,16 @@ def evaluate(config,
         io_buffer = io.BytesIO()
         np.savez_compressed(io_buffer, IS=inception_score, fid=fid, kid=kid)
         f.write(io_buffer.getvalue())
+   
+
+    if config.eval.enable_figures_only:
+      import torchvision
+      num_sampling_rounds = config.eval.num_samples // config.eval.batch_size + 1
+      for r in range(num_sampling_rounds):
+        logging.info("sampling only figures -- ckpt: %d, round: %d" % (ckpt, r))
+        this_sample_dir = os.path.join(eval_dir, f"ckpt_{ckpt}")
+        
+        # Directory to save samples. Different for each host to avoid writing conflicts
+        samples, n = sampling_fn(score_model)
+        torchvision.utils.save_image(samples.clamp_(0.0, 1.0), os.path.join(this_sample_dir, '%d.png'%r), nrow=10, normalize=False)
+        

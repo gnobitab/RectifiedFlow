@@ -210,9 +210,9 @@ def get_pytorch_dataset(config):
     import torchvision.transforms as tr
     if config.data.dataset == 'CelebA-HQ-Pytorch':
         transform = tr.Resize(256)
-        return tds.celeba_hq_dataset(config.training.data_dir, config.training.batch_size, transform), tds.celeba_hq_dataset(config.training.batch_size, transform)
+        return tds.celeba_hq_dataset(config.training.data_dir, config.training.batch_size, transform), tds.celeba_hq_dataset(config.training.data_dir, config.training.batch_size, transform)
     elif config.data.dataset == 'AFHQ-CAT-Pytorch': 
         transform = tr.Resize(256)
-        return tds.afhq_dataset(config.training.data_dir, config.training.batch_size, 'cat', transform), tds.afhq_dataset(config.training.batch_size, 'cat', transform)
+        return tds.afhq_dataset(config.training.data_dir, config.training.batch_size, 'cat', transform), tds.afhq_dataset(config.training.data_dir, config.training.batch_size, 'cat', transform)
     else:
         assert False, 'Not implemented'

@@ -37,7 +37,8 @@ def get_default_configs():
   evaluate.begin_ckpt = 50
   evaluate.end_ckpt = 96
   evaluate.batch_size = 512
-  evaluate.enable_sampling = True
+  evaluate.enable_sampling = False
+  evaluate.enable_figures_only = False
   evaluate.num_samples = 50000
   evaluate.enable_loss = False
   evaluate.enable_bpd = False
@@ -51,7 +52,7 @@ def get_default_configs():
   data.uniform_dequantization = False
   data.centered = False
   data.num_channels = 3
-  data.root_path = '/scratch/cluster/xcliu/tf_datasets/'
+  data.root_path = 'YOUR_ROOT_PATH'
 
   # model
   config.model = model = ml_collections.ConfigDict()
