@@ -11,8 +11,8 @@ import random
 class celeba_hq_dataset(Dataset):
     """CelebA HQ dataset."""
 
-    def __init__(self, batchsize, transform=None):
-        self.root_dir = '/scratch/cluster/xcliu/tf_datasets/CelebAMask-HQ/CelebA-HQ-img/'
+    def __init__(self, data_dir, batchsize, transform=None):
+        self.root_dir = data_dir
         self.num_imgs = len(os.listdir(self.root_dir))
         self.transform = transform
         self.batchsize = batchsize
@@ -39,8 +39,8 @@ class celeba_hq_dataset(Dataset):
 class afhq_dataset(Dataset):
     """AFHQ dataset."""
 
-    def __init__(self, batchsize, category='cat', transform=None):
-        self.root_dir = os.path.join('/scratch/cluster/xcliu/tf_datasets/afhq/data/train/', category)
+    def __init__(self, data_dir, batchsize, category='cat', transform=None):
+        self.root_dir = os.path.join(data_dir, category)
         self.files = os.listdir(self.root_dir)
         self.num_imgs = len(self.files)
         self.transform = transform

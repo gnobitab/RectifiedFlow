@@ -27,6 +27,7 @@ def get_config():
   training.continuous = False
   training.reduce_mean = True
   training.snapshot_freq = 100000
+  training.data_dir = 'DATA_DIR'
 
   # sampling
   sampling = config.sampling
