@@ -129,8 +129,21 @@ Then, to distill 1-Rectified Flow with online data generation, run
 python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_reflow_distill_k=1_online.py  --eval_folder eval --mode reflow --workdir ./logs/1_rectified_flow_k=1_distill --config.reflow.last_flow_ckpt "./logs/1_rectified_flow/checkpoints/checkpoint-10.pth"
 ```
 
+### High-Resolution Generation
+
+We provide code and pre-trained checkpoints for high-resolution generation on four $256 \times 256$ datasets, LSUN Bedroom, LSUN Church, CelebA-HQ and AFHQ-Cat. 
+
+We use CelebA-HQ as an example. To train 1-rectified flow on CelebA-HQ, run
+```
+python ./main.py --config ./configs/rectified_flow/celeba_hq_pytorch_rf_gaussian.py --eval_folder eval --mode train --workdir ./logs/celebahq
+```
+
+To sample images from pre-trained rectified flow, run
+```
+python ./main.py --config ./configs/rectified_flow/celeba_hq_pytorch_rf_gaussian.py --eval_folder eval --mode eval --workdir ./logs/celebahq --config.eval.enable_figures_only --config.eval.begin_ckpt 10 --config.eval.end_ckpt 10 --config.training.data_dir YOUR_DATA_DIR
+``` 
+
 ### Pre-trained Checkpoints
-Work in progress.
 
 As an example, to use pre-trained checkpoints, download the ```checkpoint_8.pth``` from [CIFAR10 1-Rectified Flow](https://drive.google.com/file/d/10aPF5KC30SjVwr6rOnNosStpSGXnELXn/view?usp=sharing), put it in ```./logs/1_rectified_flow/checkpoints/```, then run
 
@@ -138,14 +151,21 @@ As an example, to use pre-trained checkpoints, download the ```checkpoint_8.pth`
 python ./main.py --config ./configs/rectified_flow/cifar10_rf_gaussian_ddpmpp.py --eval_folder eval --mode eval --workdir ./logs/1_rectified_flow --config.eval.enable_sampling  --config.eval.batch_size 1024 --config.eval.num_samples 50000 --config.eval.begin_ckpt 8
 ```
 
-
 The pre-trained checkpoints are listed here:
 
-* [CIFAR10 1-Rectified Flow](https://drive.google.com/file/d/10aPF5KC30SjVwr6rOnNosStpSGXnELXn/view?usp=sharing) ([Distilled](https://drive.google.com/file/d/15ravhpH39l8OcZmVx5NKaeO0Vwzcuxru/view?usp=sharing))
+* [CIFAR10 1-Rectified Flow(FID=2.58)](https://drive.google.com/file/d/10aPF5KC30SjVwr6rOnNosStpSGXnELXn/view?usp=sharing) ([Distilled(FID=6.18)](https://drive.google.com/file/d/15ravhpH39l8OcZmVx5NKaeO0Vwzcuxru/view?usp=sharing))
 
-* [CIFAR10 2-Rectified Flow](https://drive.google.com/file/d/16_5l-rUo7vimsGfHziO23KrWWmd9vlPp/view?usp=sharing) ([Distilled](https://drive.google.com/file/d/1Tf2SxNuKEnLIOLPupSVM3XQFqUWgfq8M/view?usp=sharing))
+* [CIFAR10 2-Rectified Flow(FID=3.36)](https://drive.google.com/file/d/16_5l-rUo7vimsGfHziO23KrWWmd9vlPp/view?usp=sharing) ([Distilled(FID=4.85)](https://drive.google.com/file/d/1Tf2SxNuKEnLIOLPupSVM3XQFqUWgfq8M/view?usp=sharing))
 
-* [CIFAR10 3-Rectified Flow](https://drive.google.com/file/d/12Mn5nfAwfz4Hcw7AifyhF2AZ4EtEXdu1/view?usp=sharing) ([Distilled](https://drive.google.com/file/d/1V4vxb0tZZy8QuNpkCpO5Ion7vnjuVLhh/view?usp=sharing))
+* [CIFAR10 3-Rectified Flow(FID=3.96)](https://drive.google.com/file/d/12Mn5nfAwfz4Hcw7AifyhF2AZ4EtEXdu1/view?usp=sharing) ([Distilled(FID=5.21)](https://drive.google.com/file/d/1V4vxb0tZZy8QuNpkCpO5Ion7vnjuVLhh/view?usp=sharing))
+
+* [LSUN Bedroom](https://drive.google.com/file/d/1HUJ95q605YK4sH3yIysk8j3pNXALJi8t/view?usp=sharing)
+
+* [LSUN Church](https://drive.google.com/file/d/1lFG5y492wCTToox9MSTjYWw-WqCJqM5y/view?usp=sharing)
+
+* [CelebA HQ](https://drive.google.com/file/d/1ryhuJGz75S35GEdWDLiq4XFrsbwPdHnF/view?usp=sharing)
+
+* [AFHQ Cat](https://drive.google.com/file/d/1isc4Yl2Tj1ckjfSPCtCLQtZWpBqY5VUy/view?usp=sharing)
 
 ## Image-to-Image Translation
 
