@@ -38,6 +38,12 @@ Run the following to install a subset of necessary python packages for our code
 pip install -r requirements.txt
 ```
 
+or directly with conda
+
+```
+conda env create -f env.yml
+```
+
 ### Train 1-Rectified Flow
 Run the following command to train a 1-Rectified Flow from scratch
 
