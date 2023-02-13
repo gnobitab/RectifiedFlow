@@ -25,23 +25,27 @@ We provide interactive tutorials with Colab notebooks to walk you through the wh
 
 ## Image Generation
 
-The code for image generation is in ```./ImageGeneration ```. Run the following command first
+The code for image generation is in `./ImageGeneration`. Run the following command first
 
 ```
 cd ./ImageGeneration
 ```
 
 ### Dependencies
-Run the following to install a subset of necessary python packages for our code
+The following instructions has been tested Ubuntu 20.04.5 LTS.
+
+1. Install CMake with `sudo apt install cmake`. This is required to install `lapsolver`.
+2. If you are using Anaconda, run
+
+```
+conda env create --file=env.yaml
+conda activate sde
+```
+
+Alternatively, use pip
 
 ```
 pip install -r requirements.txt
-```
-
-or directly with conda
-
-```
-conda env create -f env.yml
 ```
 
 ### Train 1-Rectified Flow
