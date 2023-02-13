@@ -50,7 +50,7 @@ python3 -m pip install -r requirements.txt
 In case the commands above above do not work (e.g. because you have a different GPU and CUDA runtime version), try the following instead
 
 ```
-python3 -m pip install numpy tensorflow tensorflow_gan torch ninja scipy matplotlib torchvision tqdm jax tensorflow_datasets ml_collections
+python3 -m pip install numpy tensorflow tensorflow_gan torch ninja scipy matplotlib torchvision tqdm tensorflow_datasets ml_collections
 python3 -m pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
 
