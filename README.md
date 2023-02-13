@@ -32,20 +32,26 @@ cd ./ImageGeneration
 ```
 
 ### Dependencies
-The following instructions has been tested Ubuntu 20.04.5 LTS.
+The following instructions has been tested on a Lambda Labs "1x A100 (40 GB SXM4)" instance, i.e. `gpu_1x_a100_sxm4`.
 
-1. Install CMake with `sudo apt install cmake`. This is required to install `lapsolver`.
-2. If you are using Anaconda, run
+For Anaconda users
 
 ```
-conda env create --file=env.yaml
-conda activate sde
+conda env create --file=environment.yml
+conda activate rectflow
 ```
 
 Alternatively, use pip
 
 ```
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
+```
+
+In case the commands above above do not work (e.g. because you have a different GPU and CUDA runtime version), try the following instead
+
+```
+python3 -m pip install numpy tensorflow tensorflow_gan torch ninja scipy matplotlib torchvision tqdm jax tensorflow_datasets ml_collections
+python3 -m pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
 
 ### Train 1-Rectified Flow
