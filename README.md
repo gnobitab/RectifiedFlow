@@ -25,23 +25,33 @@ We provide interactive tutorials with Colab notebooks to walk you through the wh
 
 ## Image Generation
 
-The code for image generation is in ```./ImageGeneration ```. Run the following command first
+The code for image generation is in `./ImageGeneration`. Run the following command first
 
 ```
 cd ./ImageGeneration
 ```
 
 ### Dependencies
-Run the following to install a subset of necessary python packages for our code
+The following instructions has been tested on a Lambda Labs "1x A100 (40 GB SXM4)" instance, i.e. `gpu_1x_a100_sxm4`.
+
+For Anaconda users
 
 ```
-pip install -r requirements.txt
+conda env create --file=environment.yml
+conda activate rectflow
 ```
 
-or directly with conda
+Alternatively, use pip
 
 ```
-conda env create -f env.yml
+python3 -m pip install -r requirements.txt
+```
+
+In case the commands above above do not work (e.g. because you have a different GPU and CUDA runtime version), try the following instead
+
+```
+python3 -m pip install numpy tensorflow tensorflow_gan torch ninja scipy matplotlib torchvision tqdm tensorflow_datasets ml_collections
+python3 -m pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
 
 ### Train 1-Rectified Flow
