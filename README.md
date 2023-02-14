@@ -32,7 +32,7 @@ cd ./ImageGeneration
 ```
 
 ### Dependencies
-The following instructions has been tested on a Lambda Labs "1x A100 (40 GB SXM4)" instance, i.e. `gpu_1x_a100_sxm4`.
+The following instructions has been tested on a Lambda Labs "1x A100 (40 GB SXM4)" instance, i.e. `gpu_1x_a100_sxm4` and Ubuntu 20.04.2(Driver Version: 495.29.05, CUDA Version: 11.5).
 
 For Anaconda users
 

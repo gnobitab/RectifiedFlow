@@ -9,3 +9,5 @@ torchvision==0.14.1
 tqdm==4.64.1
 tensorflow_datasets==4.8.2
 ml_collections==0.1.1
+jax==0.4.3
+jaxlib==0.4.3
