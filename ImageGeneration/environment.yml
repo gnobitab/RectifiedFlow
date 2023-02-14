@@ -50,7 +50,7 @@ dependencies:
       - importlib-metadata==6.0.0
       - importlib-resources==5.10.2
       - jax==0.4.3
-      - jaxlib==0.4.3+cuda11.cudnn86
+      - jaxlib==0.4.3
       - keras==2.11.0
       - kiwisolver==1.4.4
       - libclang==15.0.6.1
