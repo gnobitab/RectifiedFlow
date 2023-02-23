@@ -32,26 +32,17 @@ cd ./ImageGeneration
 ```
 
 ### Dependencies
-The following instructions has been tested on a Lambda Labs "1x A100 (40 GB SXM4)" instance, i.e. `gpu_1x_a100_sxm4` and Ubuntu 20.04.2(Driver Version: 495.29.05, CUDA Version: 11.5).
+The following instructions has been tested on a Lambda Labs "1x A100 (40 GB SXM4)" instance, i.e. `gpu_1x_a100_sxm4` and Ubuntu 20.04.2(Driver Version: 495.29.05, CUDA Version: 11.5, CuDNN Version: 8.1.0).
+We suggest to use Anaconda.
 
-For Anaconda users
-
+Run the following commands to install the dependencies:
 ```
-conda env create --file=environment.yml
+conda create -n rectflow python=3.8
 conda activate rectflow
-```
-
-Alternatively, use pip
-
-```
-python3 -m pip install -r requirements.txt
-```
-
-In case the commands above above do not work (e.g. because you have a different GPU and CUDA runtime version), try the following instead
-
-```
-python3 -m pip install numpy tensorflow tensorflow_gan torch ninja scipy matplotlib torchvision tqdm tensorflow_datasets ml_collections
-python3 -m pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
+pip install tensorflow==2.9.0 tensorflow-probability==0.12.2 tensorflow-gan==2.0.0 tensorflow-datasets==4.6.0
+pip install jax==0.3.4 jaxlib==0.3.2
+pip install numpy==1.21.6 ninja==1.11.1 matplotlib==3.7.0 ml_collections==0.1.1
 ```
 
 ### Train 1-Rectified Flow
