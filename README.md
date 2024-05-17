@@ -176,9 +176,6 @@ The pre-trained checkpoints are listed here:
 
 * [AFHQ Cat](https://drive.google.com/file/d/1isc4Yl2Tj1ckjfSPCtCLQtZWpBqY5VUy/view?usp=sharing)
 
-## Image-to-Image Translation
-
-Work in progress.
 
 ## Citation
 If you use the code or our work is related to yours, please cite us:
