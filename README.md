@@ -4,6 +4,10 @@ This is the official implementation of ICLR2023 Spotlight paper
 ## [Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow](https://arxiv.org/abs/2209.03003) 
 by *Xingchao Liu, Chengyue Gong, Qiang Liu* from UT Austin
 
+## InstaFlow
+
+Rectified Flow can be applied to Stable Diffusion and make it a one-step generator. See [here](https://github.com/gnobitab/InstaFlow)
+
 ## Introduction
 
 Rectified Flow is a novel method for learning transport maps between two distributions $\pi_0$ and $\pi_1$, by connecting **straight paths** between the samples and learning an ODE model.
